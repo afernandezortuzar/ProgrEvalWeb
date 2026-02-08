@@ -100,7 +100,7 @@
         // 1. Setup RDFLib
         const $rdf = window.$rdf;
         const store = $rdf.graph();
-        const fetcher = new $rdf.Fetcher(store);
+        const fetcher = new $rdf.Fetcher(store, { withCredentials: false });
         
         // Namespaces based on your server.py and ontology files
         const PROGREVAL = $rdf.Namespace("urn:protege:ontology:progreval#");
