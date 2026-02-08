@@ -6,128 +6,55 @@
     <title>Explorador de Ontología</title>
     <!-- Import rdflib.js from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/rdflib@2.2.32/dist/rdflib.min.js"></script>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f4f4f9;
-            color: #333;
-        }
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-        }
-        .container {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .controls {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-        select {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 16px;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #2980b9;
-        }
-        button:disabled {
-            background-color: #bdc3c7;
-            cursor: not-allowed;
-        }
-        #results {
-            margin-top: 20px;
-        }
-        .result-card {
-            background: #fff;
-            border-left: 4px solid #2ecc71;
-            padding: 15px;
-            margin-bottom: 10px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .status {
-            text-align: center;
-            margin-bottom: 15px;
-            font-style: italic;
-            color: #666;
-        }
-        .error {
-            color: #e74c3c;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <h1>Explorador de Enunciados</h1>
+    <h2>Explorador de ProgrEval</h2>
 
     <div class="container">
         <div id="status" class="status">Cargando ontología (ontology.owl)...</div>
         
         <div class="controls">
-            <select id="conceptSelect" disabled>
-                <option value="">Selecciona un Concepto...</option>
-            </select>
-            <select id="skillSelect" disabled>
-                <option value="">Selecciona una Habilidad...</option>
-            </select>
-            <button id="searchBtn" disabled>Buscar</button>
+            <textarea id="queryInput" rows="40" disabled>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX progreval: <urn:protege:ontology:progreval#>
+
+SELECT ?Contexto ?Escenario ?Consigna ?Respuesta
+WHERE {
+  
+  # Busca las actividades que evalúan el concepto y el desempeño
+  ?actividad progreval:evalua progreval:Directiva-de-Repeticion ;
+             progreval:evalua progreval:Implementacion .
+
+  # Busca enunciados que sean ejemplos de la actividad
+  ?enunciado_modelo progreval:esEjemploDe ?actividad .
+
+  # Busca enunciados que cumplan con el público objetivo
+  ?enunciado_modelo progreval:apuntadoA progreval:Nivel-Universitario . 
+
+  # Recupera el contexto del enunciado, si existe
+  OPTIONAL { ?enunciado_modelo progreval:Enunciado ?Consigna . }
+  
+  # Recupera el escenario del enunciado, si existe
+  OPTIONAL { ?enunciado_modelo progreval:Respuesta-Posible ?Respuesta . }
+
+  # Recupera la consigna del enunciado, si existe
+  OPTIONAL { ?enunciado_modelo progreval:Enunciado ?Consigna . }
+  
+  # Recupera la respuesta del enunciado, si existe
+  OPTIONAL { ?enunciado_modelo progreval:Respuesta-Posible ?Respuesta . }
+}
+ORDER BY RAND()
+LIMIT 3
+</textarea>
+            <button id="runQueryBtn" disabled>Ejecutar Consulta</button>
         </div>
 
         <div id="results"></div>
     </div>
 
-    <script>
-        // 1. Setup RDFLib
-        const $rdf = window.$rdf;
-        const store = $rdf.graph();
-        const fetcher = new $rdf.Fetcher(store, { withCredentials: false });
-        
-        // Namespaces based on your server.py and ontology files
-        const PROGREVAL = $rdf.Namespace("urn:protege:ontology:progreval#");
-        const RDF = $rdf.Namespace("http://www.w3.org/1999/02/22-rdf-syntax-ns#");
-        
-        // Configuration
-        const ONTOLOGY_URL = 'https://raw.githubusercontent.com/afernandezortuzar/ProgrEvalOWL/refs/heads/main/ProgrEval-Ontology.owl'
-
-        // DOM Elements
-        const statusEl = document.getElementById('status');
-        const conceptSelect = document.getElementById('conceptSelect');
-        const skillSelect = document.getElementById('skillSelect');
-        const searchBtn = document.getElementById('searchBtn');
-        const resultsDiv = document.getElementById('results');
-
-        // 2. Load Ontology
-        fetcher.nowOrWhenFetched(ONTOLOGY_URL, function(ok, body, response) {
-            if (!ok) {
-                statusEl.textContent = "Error al cargar la ontología.";
-                statusEl.className = "error";
-                console.error("Error fetching ontology:", body);
-            } else {
-                statusEl.textContent = "Ontología cargada correctamente.";
-                //initializeInterface();
-            }
-        });
-    
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
