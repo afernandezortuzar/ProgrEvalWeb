@@ -3,57 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Explorador de Ontología</title>
+    <title>Explorador de ProgrEval</title>
     <!-- Import rdflib.js from CDN -->
     <script src="https://cdn.jsdelivr.net/npm/rdflib@2.2.32/dist/rdflib.min.js"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <h2>Explorador de ProgrEval</h2>
+    <h2>ProgrEval</h2>
 
-    <div class="container">
-        <div id="status" class="status">Cargando ontología (ontology.owl)...</div>
-        
-        <div class="controls">
-            <textarea id="queryInput" rows="40" disabled>
-PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX progreval: <urn:protege:ontology:progreval#>
+    <nav class="tab-nav">
+        <button class="tab-button active" onclick="loadTab('query')">Query</button>
+        <button class="tab-button" onclick="loadTab('documentation')">Documentación</button>
+    </nav>
 
-SELECT ?Contexto ?Escenario ?Consigna ?Respuesta
-WHERE {
-  
-  # Busca las actividades que evalúan el concepto y el desempeño
-  ?actividad progreval:evalua progreval:Directiva-de-Repeticion ;
-             progreval:evalua progreval:Implementacion .
-
-  # Busca enunciados que sean ejemplos de la actividad
-  ?enunciado_modelo progreval:esEjemploDe ?actividad .
-
-  # Busca enunciados que cumplan con el público objetivo
-  ?enunciado_modelo progreval:apuntadoA progreval:Nivel-Universitario . 
-
-  # Recupera el contexto del enunciado, si existe
-  OPTIONAL { ?enunciado_modelo progreval:Enunciado ?Consigna . }
-  
-  # Recupera el escenario del enunciado, si existe
-  OPTIONAL { ?enunciado_modelo progreval:Respuesta-Posible ?Respuesta . }
-
-  # Recupera la consigna del enunciado, si existe
-  OPTIONAL { ?enunciado_modelo progreval:Enunciado ?Consigna . }
-  
-  # Recupera la respuesta del enunciado, si existe
-  OPTIONAL { ?enunciado_modelo progreval:Respuesta-Posible ?Respuesta . }
-}
-ORDER BY RAND()
-LIMIT 3
-</textarea>
-            <button id="runQueryBtn" disabled>Ejecutar Consulta</button>
-        </div>
-
-        <div id="results"></div>
-    </div>
+    <main id="tab-content">
+        <!-- Tab content will be loaded here -->
+    </main>
 
     <script src="script.js"></script>
 </body>

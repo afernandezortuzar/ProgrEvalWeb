@@ -1,0 +1,19 @@
+.doc-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 300px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.wip-sign {
+    font-size: 2em;
+    color: #f39c12;
+    font-weight: bold;
+    border: 2px dashed #f39c12;
+    padding: 20px 40px;
+    border-radius: 10px;
+    background-color: #fffdf6;
+}

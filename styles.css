@@ -7,103 +7,38 @@ body {
     color: #333;
 }
 h2 {
-    color: #2c3e50;
-    text-align: center;
-}
-.container {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-.controls {
-    display: flex;
-    gap: 10px;
+    margin-left: 10px;
     margin-bottom: 20px;
-    flex-wrap: wrap;
+    font-size: 30px;
+    color: #2c3e50;
+    text-align: left;
 }
-textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-family: monospace;
-    font-size: 14px;
-    resize: vertical;
-    box-sizing: border-box;
+
+/* Tab Navigation */
+.tab-nav {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    gap: 10px;
 }
-button {
-    padding: 10px 20px;
-    background-color: #3498db;
-    color: white;
+
+.tab-button {
+    padding: 10px 25px;
+    background-color: #ecf0f1;
+    color: #2c3e50;
     border: none;
-    border-radius: 4px;
+    border-radius: 20px;
     cursor: pointer;
     font-size: 16px;
+    transition: all 0.3s ease;
 }
-button:hover {
-    background-color: #2980b9;
-}
-button:disabled {
+
+.tab-button:hover {
     background-color: #bdc3c7;
-    cursor: not-allowed;
 }
-#results {
-    margin-top: 20px;
-}
-.result-card {
-    background: #fff;
-    border-left: 4px solid #2ecc71;
-    padding: 15px;
-    margin-bottom: 10px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-}
-.status {
-    text-align: center;
-    margin-bottom: 15px;
-    font-style: italic;
-    color: #666;
-}
-.error {
-    color: #e74c3c;
-    text-align: center;
-}
-.result-row {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-.row-header {
-    margin-top: 0;
-    margin-bottom: 15px;
-    color: #2c3e50;
-    border-bottom: 2px solid #3498db;
-    padding-bottom: 10px;
-}
-.data-pair {
-    margin-bottom: 15px;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 10px;
-}
-.data-pair:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-    padding-bottom: 0;
-}
-.data-label {
-    font-weight: bold;
-    color: #555;
-    margin-bottom: 5px;
-    display: block;
-}
-.data-value {
-    white-space: pre-wrap;
-    word-break: break-word;
-    color: #333;
-    background-color: #f9f9f9;
-    padding: 10px;
-    border-radius: 4px;
+
+.tab-button.active {
+    background-color: #3498db;
+    color: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }

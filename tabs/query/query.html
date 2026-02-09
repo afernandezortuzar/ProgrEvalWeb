@@ -1,0 +1,42 @@
+<div class="container">
+    <div id="status" class="status">Cargando ontología...</div>
+    
+    <div class="controls">
+        <textarea id="queryInput" rows="40" disabled>
+        PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+        PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+        PREFIX progreval: <urn:protege:ontology:progreval#>
+
+        SELECT ?Contexto ?Escenario ?Consigna ?Respuesta
+        WHERE {
+        
+        # Busca las actividades que evalúan el concepto y el desempeño
+        ?actividad progreval:evalua progreval:Directiva-de-Repeticion ;
+                    progreval:evalua progreval:Implementacion .
+
+        # Busca enunciados que sean ejemplos de la actividad
+        ?enunciado_modelo progreval:esEjemploDe ?actividad .
+
+        # Busca enunciados que cumplan con el público objetivo
+        ?enunciado_modelo progreval:apuntadoA progreval:Nivel-Universitario . 
+
+        # Recupera el contexto del enunciado, si existe
+        OPTIONAL { ?enunciado_modelo progreval:Enunciado ?Consigna . }
+        
+        # Recupera el escenario del enunciado, si existe
+        OPTIONAL { ?enunciado_modelo progreval:Respuesta-Posible ?Respuesta . }
+
+        # Recupera la consigna del enunciado, si existe
+        OPTIONAL { ?enunciado_modelo progreval:Enunciado ?Consigna . }
+        
+        # Recupera la respuesta del enunciado, si existe
+        OPTIONAL { ?enunciado_modelo progreval:Respuesta-Posible ?Respuesta . }
+        }
+        ORDER BY RAND()
+        LIMIT 3
+        </textarea>
+        <button id="runQueryBtn" disabled>Ejecutar Consulta</button>
+    </div>
+
+    <div id="results"></div>
+</div>
