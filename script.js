@@ -41,7 +41,7 @@ window.loadTab = function(tabName) {
     // Update active button
     document.querySelectorAll('.tab-button').forEach(btn => {
         btn.classList.remove('active');
-        if (btn.textContent.toLowerCase().includes(tabName === 'query' ? 'query' : 'documentación')) {
+        if (btn.id === `tab-button-${tabName}`) {
             btn.classList.add('active');
         }
     });

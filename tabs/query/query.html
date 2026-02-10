@@ -7,7 +7,7 @@
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX progreval: <urn:protege:ontology:progreval#>
 
-        SELECT ?Contexto ?Escenario ?Consigna ?Respuesta
+        SELECT ?Contexto ?Dominio ?Consigna ?Respuesta
         WHERE {
         
         # Busca las actividades que evalúan el concepto y el desempeño
@@ -23,7 +23,7 @@
         # Recupera el contexto del enunciado, si existe
         OPTIONAL { ?enunciado_modelo progreval:Enunciado ?Consigna . }
         
-        # Recupera el escenario del enunciado, si existe
+        # Recupera el dominio del enunciado, si existe
         OPTIONAL { ?enunciado_modelo progreval:Respuesta-Posible ?Respuesta . }
 
         # Recupera la consigna del enunciado, si existe

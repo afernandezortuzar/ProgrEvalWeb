@@ -1,5 +1,5 @@
-(function() {
-    const container = document.querySelector('.doc-container');
+(function() {    
+    const container = document.getElementById('doc-container');
     
 
     // Event Delegation for Accordion Toggles

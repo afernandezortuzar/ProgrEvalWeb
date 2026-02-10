@@ -13,8 +13,9 @@
     <h2>ProgrEval</h2>
 
     <nav class="tab-nav">
-        <button class="tab-button active" onclick="loadTab('query')">Query</button>
-        <button class="tab-button" onclick="loadTab('documentation')">Documentación</button>
+        <button type="button" class="tab-button active" id="tab-button-query" onclick="loadTab('query')">Query</button>
+        <button type="button" class="tab-button" id="tab-button-documentation" onclick="loadTab('documentation')">Documentación</button>
+        <button type="button" class="tab-button" id="tab-button-design" onclick="loadTab('design')">Diseño</button>
     </nav>
 
     <main id="tab-content">
