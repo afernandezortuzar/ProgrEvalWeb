@@ -1,5 +1,91 @@
-.status-msg {
+#design-container {
+    max-width: 85%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+.form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    background-color: #fff;
+}
+
+.form-actions {
+    margin-top: 30px;
+}
+
+.btn-primary {
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.grid-container {
+    overflow-x: auto;
+    margin-bottom: 30px;
+    border: 1px solid #eee;
+
+}
+
+.design-grid {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.design-grid th, .design-grid td {
+    border: 1px solid #ddd;
+    padding: 8px;
     text-align: center;
-    font-size: xx-large;
-    color: #666;
+}
+
+.design-grid th {
+    background-color: #f8f9fa;
+    
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.design-grid thead th {
+    vertical-align: top;
+    height: 1px;
+}
+
+.header-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 5px;
+    height: 100%;
+}
+
+.header-label {
+    text-align: center;
+}
+
+.header-label-container {
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    min-height: 50px;
+}
+
+.info-icon {
+    cursor: help;
+    flex-shrink: 0;
+    margin-left: 3px;
 }
