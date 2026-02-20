@@ -8,12 +8,22 @@
             <div id="knowledge-grid-container" class="grid-container">Cargando tabla...</div>
         </div>
 
-        <div class="form-group">
-            <label for="select-concepto">Concepto</label>
-            <select id="select-concepto" name="concepto" disabled>
-                <option value="">Cargando...</option>
-            </select>
+        <div class="form-row">
+            <div class="form-group half-width">
+                <label for="select-concepto">Concepto</label>
+                <select id="select-concepto" name="concepto" disabled>
+                    <option value="">Cargando...</option>
+                </select>
+            </div>
+            <div class="form-group half-width">
+                <label for="select-competencia">Nivel de Competencia</label>
+                <select id="select-competencia" name="competencia" disabled>
+                    <option value="">Seleccione un concepto primero</option>
+                </select>
+            </div>
         </div>
+
+        <div id="competencia-description"></div>
 
         <div class="form-group">
             <label for="select-desempeno">Desempeño</label>
@@ -23,14 +33,30 @@
         </div>
 
         <div class="form-group">
-            <label for="select-nivel">Nivel Educativo</label>
-            <select id="select-nivel" name="nivel" disabled>
+            <label for="select-publico">Público objetivo</label>
+            <select id="select-publico" name="publico" disabled>
                 <option value="">Cargando...</option>
             </select>
         </div>
 
-        <div class="form-actions">
-            <button type="button" id="btn-submit-design" class="btn-primary">Generar (Placeholder)</button>
+        <div class="form-row">
+            <div class="form-group half-width">
+                <label for="select-esfuerzo">Esfuerzo de corrección</label>
+                <select id="select-esfuerzo" name="esfuerzo" disabled>
+                    <option value="">Cargando...</option>
+                </select>
+            </div>
+            <div class="form-group half-width">
+                <label for="select-formato">Formato de actividad</label>
+                <select id="select-formato" name="formato" disabled>
+                    <option value="">Seleccione un esfuerzo primero</option>
+                </select>
+            </div>
         </div>
+
+        <div class="form-actions">
+            <button type="button" id="btn-submit-design" class="btn-primary">Mostrar ejemplos</button>
+        </div>
+        <div id="design-results" style="margin-top: 20px;"></div>
     </form>
 </div>

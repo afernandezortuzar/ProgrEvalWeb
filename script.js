@@ -18,8 +18,15 @@ fetch(ONTOLOGY_URL, { mode: 'cors', credentials: 'omit' })
     })
     .then(body => {
         window.$rdf.parse(body, window.store, ONTOLOGY_URL, 'application/rdf+xml');
-        window.isOntologyLoaded = true;
         
+        // We "materialize" the ontology by querying for ALL statements (including inferred ones) and adding them.
+        // The store handles duplicates automatically.
+        // The 'false' as the 4th argument to statementsMatching enables inference.
+        const inferredStatements = window.store.statementsMatching(undefined, undefined, undefined, false);
+        window.store.add(inferredStatements);
+
+        window.isOntologyLoaded = true;
+
         // Dispatch event so tabs can react
         window.dispatchEvent(new Event('ontologyLoaded'));
         
