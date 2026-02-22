@@ -75,7 +75,7 @@
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
         PREFIX progreval: <urn:protege:ontology:progreval#>
 
-        SELECT ?Contexto ?Dominio ?Consigna ?Respuesta
+        SELECT ?enunciado_modelo ?Contexto ?Dominio ?Consigna ?Respuesta
         WHERE {
         
         # Busca las actividades que evalúan el concepto y el desempeño
@@ -89,7 +89,7 @@
         # Busca enunciados que cumplan con el público objetivo
         ?enunciado_modelo progreval:apuntadoA {{NIVEL_EDUCATIVO_URI}} .
 
-        ?enunciado_modelo progreval:evaluaConceptoANivel {{NIVEL_COMPETENCIA_URI}}.
+        ?enunciado_modelo progreval:evaluaConceptoANivel {{NIVEL_COMPETENCIA_URI}} .        
 
         # Recupera el contexto del enunciado, si existe
         OPTIONAL { ?enunciado_modelo progreval:Enunciado ?Consigna . }
@@ -101,10 +101,9 @@
         OPTIONAL { ?enunciado_modelo progreval:Enunciado ?Consigna . }
         
         # Recupera la respuesta del enunciado, si existe
-        OPTIONAL { ?enunciado_modelo progreval:Respuesta-Posible ?Respuesta . }
+        OPTIONAL { ?enunciado_modelo progreval:Respuesta ?Respuesta . }
         }
-        ORDER BY RAND()
-        LIMIT 3`
+        ORDER BY RAND()`
     };
 
     /**
@@ -250,7 +249,9 @@
             return;
         }
 
-        let html = '<table class="design-grid"><thead><tr><th></th>';
+        const PROGREVAL = window.$rdf.Namespace('urn:protege:ontology:progreval#');
+
+        let html = '<table class="design-grid"><thead><tr><th><div class="grid-center-cell"><input type="checkbox" id="select-all-grid" title="Seleccionar todo"></div></th>';
         
         // Header Row (Conceptos)
         conceptos.forEach((c, index) => {
@@ -268,11 +269,29 @@
 
         // Body Rows (Desempeños)
         desempenos.forEach(d => {
-            html += `<tr><th>${d.label}</th>`;
+            html += `<tr><th>
+                <div class="header-label-container">
+                    <div class="header-label">${d.label}</div>
+                    <div title="${d.description ? d.description.replace(/"/g, '&quot;') : ''}" class="info-icon">ℹ️</div>
+                </div>
+            </th>`;
             conceptos.forEach((c, index) => {
-                // Checkbox value combines Desempeño and Concepto IDs
-                const val = `${d.instance_uri}|${c.instance_uri}`;
-                html += `<td><input type="checkbox" name="conocimiento_previo" value="${val}" data-col="${index}"></td>`;
+                const dNode = window.$rdf.sym(d.instance_uri);
+                const cNode = window.$rdf.sym(c.instance_uri);
+                
+                const skillsWithDesempeno = window.store.match(null, PROGREVAL('empleaDesempeño'), dNode);
+                let skillUri = null;
+
+                for (const st of skillsWithDesempeno) {
+                    const skillSubject = st.subject;
+                    const hasConcept = window.store.match(skillSubject, PROGREVAL('empleaDesempeñoSobre'), cNode);
+                    if (hasConcept.length > 0) {
+                        skillUri = skillSubject.value;
+                        break;
+                    }
+                }
+
+                html += `<td><input type="checkbox" name="conocimiento_previo" value="${skillUri || ''}" data-col="${index}" ${!skillUri ? 'disabled' : ''}></td>`;
             });
             html += '</tr>';
         });
@@ -282,7 +301,15 @@
 
         // Event delegation for Select All
         container.onchange = (e) => {
-            if (e.target.classList.contains('select-all-col')) {
+            if (e.target.id === 'select-all-grid') {
+                const isChecked = e.target.checked;
+                const checkboxes = container.querySelectorAll('input[type="checkbox"]');
+                checkboxes.forEach(cb => {
+                    if (cb !== e.target && !cb.disabled) {
+                        cb.checked = isChecked;
+                    }
+                });
+            } else if (e.target.classList.contains('select-all-col')) {
                 const colIndex = e.target.dataset.col;
                 const isChecked = e.target.checked;
                 const checkboxes = container.querySelectorAll(`input[name="conocimiento_previo"][data-col="${colIndex}"]`);
@@ -342,6 +369,21 @@
         resultsDiv.innerHTML = html;
     };
 
+    const checkFormValidity = () => {
+        const requiredIds = ['select-concepto', 'select-competencia', 'select-desempeno', 'select-publico', 'select-formato'];
+        const allFilled = requiredIds.every(id => {
+            const el = document.getElementById(id);
+            return el && el.value !== "";
+        });
+        if (submitBtn) {
+            submitBtn.disabled = !allFilled;
+            const note = document.getElementById('submit-disabled-note');
+            if (note) {
+                note.style.display = allFilled ? 'none' : 'inline';
+            }
+        }
+    };
+
     const init = async () => {
         // Fetch all data first
         const [conceptos, desempenos, publicos, formatos] = await Promise.all([
@@ -382,11 +424,13 @@
                 if (!val) {
                     formatoSelect.disabled = true;
                     formatoSelect.innerHTML = '<option value="">Seleccione un esfuerzo primero</option>';
+                    checkFormValidity();
                     return;
                 }
                 
                 const filtered = formatos.filter(item => item.esfuerzo === val);
                 renderSelect('select-formato', filtered);
+                checkFormValidity();
             });
         }
 
@@ -404,6 +448,7 @@
                 if (!val) {
                     compSelect.disabled = true;
                     compSelect.innerHTML = '<option value="">Seleccione un concepto primero</option>';
+                    checkFormValidity();
                     return;
                 }
 
@@ -416,6 +461,7 @@
                 const data = await fetchData('competencia', { '{{CONCEPTO_URI}}': uri });
                 data.forEach(d => d.value = d.instance_uri);
                 renderSelect('select-competencia', data);
+                checkFormValidity();
             });
         }
 
@@ -438,6 +484,15 @@
                 }
             });
         }
+
+        // Attach validation listeners to all required selects
+        ['select-competencia', 'select-desempeno', 'select-publico', 'select-formato'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('change', checkFormValidity);
+        });
+
+        // Initial check
+        checkFormValidity();
     };
 
     // Check if ontology is loaded
@@ -455,7 +510,16 @@
                 return el && el.value ? `<${el.value}>` : '';
             };
 
-            //FALTAN LOS CONOCIMIENTOS PREVIOS
+            // Collect unchecked skills (skills the user does NOT have)
+            const unchecked = document.querySelectorAll('input[name="conocimiento_previo"]:not(:checked)');
+            const forbiddenSkillURIs = new Set();
+            
+            unchecked.forEach(cb => {
+                if (cb.value) {
+                    forbiddenSkillURIs.add(cb.value);
+                }
+            });
+            
             const replacements = {
                 '{{CONCEPTO_URI}}': getSelectedValue('select-concepto'),
                 '{{NIVEL_COMPETENCIA_URI}}': getSelectedValue('select-competencia'),
@@ -463,9 +527,37 @@
                 '{{NIVEL_EDUCATIVO_URI}}': getSelectedValue('select-publico'),
                 '{{FORMATO_URI}}': getSelectedValue('select-formato')
             };
+            
+            let results = await fetchData('actividad', replacements);
+            
+            // Filter results in JS to avoid SPARQL engine limitations
+            const PROGREVAL = window.$rdf.Namespace('urn:protege:ontology:progreval#');
+            
+            if (forbiddenSkillURIs.size > 0) {
+                results = results.filter(row => {
+                    const enunciadoUri = row.enunciado_modelo;
+                    if (!enunciadoUri) return false;
+                    
+                    const enunciadoNode = window.$rdf.sym(enunciadoUri);
+                    const skills = window.store.match(enunciadoNode, PROGREVAL('requiereManejoDe'), null);
+                    
+                    for (const st of skills) {
+                        if (forbiddenSkillURIs.has(st.object.value)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+            }
 
-            const results = await fetchData('actividad', replacements);
+            // Apply limit manually after filtering
+            results = results.slice(0, 3);
 
+            // Delete the enunciado_modelo column from results so it's not rendered
+            results.forEach(row => {
+                delete row.enunciado_modelo;
+            });
+            
 
             renderResults(results);
         });

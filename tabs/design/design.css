@@ -80,7 +80,7 @@
 .header-label-container {
     display: flex; 
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     min-height: 50px;
 }
 
@@ -155,4 +155,17 @@
     border-left: 3px solid #ccc;
     display: none;
     white-space: pre-wrap;
+}
+
+.grid-center-cell {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+#submit-disabled-note {
+    margin-left: 10px;
+    color: #666;
+    display: none;
 }

@@ -30,7 +30,7 @@
         OPTIONAL { ?enunciado_modelo progreval:Enunciado ?Consigna . }
         
         # Recupera la respuesta del enunciado, si existe
-        OPTIONAL { ?enunciado_modelo progreval:Respuesta-Posible ?Respuesta . }
+        OPTIONAL { ?enunciado_modelo progreval:Respuesta ?Respuesta . }
         }
         ORDER BY RAND()
         LIMIT 3
